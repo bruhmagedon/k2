@@ -14,18 +14,19 @@ export type Response =
 
 self.onmessage = ({ data }: MessageEvent<Request>) => {
   try {
+    const { mode, step, duration } = data;
     const response: Response =
-      data.mode === "analysis"
+      mode === "analysis"
         ? {
             type: "analysis",
-            rows: analyze(data.step, data.duration),
-            duration: data.duration,
-            step: data.step,
+            rows: analyze(step, duration),
+            duration,
+            step,
           }
         : {
             type: "calculation",
-            result: calculate(data.step, data.duration, data.mode === "auto"),
-            duration: data.duration,
+            result: calculate(step, duration, mode === "auto"),
+            duration,
           };
     self.postMessage(response);
   } catch (error) {

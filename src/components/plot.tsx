@@ -30,6 +30,15 @@ export function Plot({
   analysis = false,
   threshold = false,
 }: PlotProps) {
+  const axisName = analysis ? "h" : "t";
+  const showThreshold =
+    threshold &&
+    Math.max(
+      ...data.map((point) => {
+        return "error" in point ? point.error : 0;
+      }),
+    ) >= 0.1;
+
   return (
     <section className="min-w-0" aria-label={title}>
       <div className="mb-5 flex items-baseline justify-between gap-2">
@@ -52,7 +61,7 @@ export function Plot({
               minTickGap={32}
               tickMargin={12}
               label={{
-                value: analysis ? "h, с" : "t, с",
+                value: `${axisName}, с`,
                 position: "insideBottomRight",
                 offset: -3,
                 fill: "var(--muted-foreground)",
@@ -78,24 +87,27 @@ export function Plot({
                 fontSize: 12,
               }}
               labelStyle={{ color: "var(--muted-foreground)", marginBottom: 6 }}
-              labelFormatter={(label) => `${analysis ? "h" : "t"} = ${format(Number(label))} с`}
-              formatter={(value) => [`${format(Number(value))} ${unit}`, title]}
+              labelFormatter={(label) => {
+                return `${axisName} = ${format(Number(label))} с`;
+              }}
+              formatter={(value) => {
+                return [`${format(Number(value))} ${unit}`, title];
+              }}
             />
-            {threshold &&
-              Math.max(...data.map((point) => ("error" in point ? point.error : 0))) >= 0.1 && (
-                <ReferenceLine
-                  y={1}
-                  stroke="var(--muted-foreground)"
-                  strokeDasharray="4 4"
-                  label={{
-                    value: "1%",
-                    fill: "var(--muted-foreground)",
-                    fontSize: 11,
-                    position: "insideTopRight",
-                  }}
-                  ifOverflow="extendDomain"
-                />
-              )}
+            {showThreshold && (
+              <ReferenceLine
+                y={1}
+                stroke="var(--muted-foreground)"
+                strokeDasharray="4 4"
+                label={{
+                  value: "1%",
+                  fill: "var(--muted-foreground)",
+                  fontSize: 11,
+                  position: "insideTopRight",
+                }}
+                ifOverflow="extendDomain"
+              />
+            )}
             <Line
               type="linear"
               dataKey={valueKey}

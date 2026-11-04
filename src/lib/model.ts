@@ -32,7 +32,7 @@ export const MODEL = {
   c: 6500,
   u: 35,
   g: 9.81,
-  initial: [1000, 0, 1090] as State,
+  initial: [1000, 0, 1090] satisfies State,
 };
 
 const RESISTANCE = [
@@ -41,11 +41,15 @@ const RESISTANCE = [
 ];
 
 export function resistance(height: number): number {
-  if (height <= 0) return RESISTANCE[0]!;
-  if (height >= 10000) return RESISTANCE[20]!;
+  if (height <= 0) {
+    return RESISTANCE[0];
+  }
+  if (height >= 10000) {
+    return RESISTANCE[20];
+  }
   const index = Math.floor(height / 500);
   const fraction = (height - index * 500) / 500;
-  return RESISTANCE[index]! + fraction * (RESISTANCE[index + 1]! - RESISTANCE[index]!);
+  return RESISTANCE[index] + fraction * (RESISTANCE[index + 1] - RESISTANCE[index]);
 }
 
 function acceleration(height: number, velocity: number, mass: number): number {
@@ -71,7 +75,9 @@ export function rk4Step([x, v, m]: State, h: number): State {
 }
 
 export function relativeError(value: number, reference: number): number {
-  if (reference === 0) return value === 0 ? 0 : Infinity;
+  if (reference === 0) {
+    return value === 0 ? 0 : Infinity;
+  }
   return (Math.abs(value - reference) / Math.abs(reference)) * 100;
 }
 

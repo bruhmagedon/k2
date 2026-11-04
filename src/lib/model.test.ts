@@ -18,7 +18,11 @@ describe("модель 4, вариант 10", () => {
   it("доходит до T с укороченным последним шагом", () => {
     const solution = integrate(3, 10);
     expect(solution.steps).toBe(4);
-    expect(solution.points.map((p) => p.t)).toEqual([0, 3, 6, 9, 10]);
+    expect(
+      solution.points.map((p) => {
+        return p.t;
+      }),
+    ).toEqual([0, 3, 6, 9, 10]);
   });
 
   it("сходится к независимому эталону RK4 с h=0,0001", () => {
@@ -68,7 +72,9 @@ describe("модель 4, вариант 10", () => {
   it.each([0, -1, 10, NaN, Infinity, 1e-20])(
     "отклоняет недопустимый или чрезмерно малый шаг %s",
     (h) => {
-      expect(() => calculate(h, 10)).toThrow();
+      expect(() => {
+        return calculate(h, 10);
+      }).toThrow();
     },
   );
 
